@@ -1,0 +1,527 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SteeringProject</name>
+    </assembly>
+    <members>
+        <member name="P:SOFT152Steering.AntAgent.AgentSpeed">
+            <summary>
+            The speed of the agent as used in all three movment methods 
+            Ideal value depends on timer tick interval and realistic motion of
+            agents needed. Suggest though in range 0 ... 2
+            </summary>
+        </member>
+        <member name="P:SOFT152Steering.AntAgent.ApproachRadius">
+            <summary>
+            If the agent is using the the ApproachAgent() method, this property defines
+            at what point the agent will reduce the speed of approach to miminic a 
+            more relistic approach behaviour
+            </summary>
+        </member>
+        <member name="P:SOFT152Steering.AntAgent.WanderLimits">
+            <summary>
+            Property defines how 'random' the agent movement is whilst 
+            the agent is using the Wander() method
+            Suggest range of WanderLimits is 0 ... 1
+            </summary>
+        </member>
+        <member name="P:SOFT152Steering.AntAgent.ShouldStayInWorldBounds">
+            <summary>
+            Used in conjunction worldBounds to determine if
+            the agents position will stay within the world bounds.
+            </summary>
+        </member>
+        <member name="P:SOFT152Steering.AntAgent.ClosestAntIndex">
+            <summary>
+            Store and retrieve the index of the closest ant.
+            </summary>
+        </member>
+        <member name="P:SOFT152Steering.AntAgent.ClosestFoodIndex">
+            <summary>
+            Store and retrieve the index of the closest food source.
+            </summary>
+        </member>
+        <member name="P:SOFT152Steering.AntAgent.ClosestNestIndex">
+            <summary>
+            Store and retrieve the index of the closest colony nest.
+            </summary>
+        </member>
+        <member name="P:SOFT152Steering.AntAgent.FoodLocation">
+            <summary>
+            Store the latest food location the ant agent has acquired.
+            </summary>
+        </member>
+        <member name="P:SOFT152Steering.AntAgent.NestLocation">
+            <summary>
+            Store the last nest location the ant agent has acquired. 
+            </summary>
+        </member>
+        <member name="P:SOFT152Steering.AntAgent.IsFoodKnown">
+            <summary>
+            Store a Boolean to see if a food location is known to this ant.
+            </summary>
+        </member>
+        <member name="P:SOFT152Steering.AntAgent.IsNestKnown">
+            <summary>
+            Store a Boolean to see if a nest location is known to this ant.
+            </summary>
+        </member>
+        <member name="P:SOFT152Steering.AntAgent.IsCarryingFood">
+            <summary>
+            Store if the ant is carrying food currently.
+            </summary>
+        </member>
+        <member name="P:SOFT152Steering.AntAgent.IsMovingToFood">
+            <summary>
+            Store if the ant is currently moving towards the food location.
+            </summary>
+        </member>
+        <member name="P:SOFT152Steering.AntAgent.IsMovingToNest">
+            <summary>
+            Store if the ant is currently moving towards the nest location.
+            </summary>
+        </member>
+        <member name="F:SOFT152Steering.AntAgent.agentPosition">
+            <summary>
+            Current postion of the agent, updated by the three
+            movment methods
+            </summary>
+        </member>
+        <member name="F:SOFT152Steering.AntAgent.wanderPosition">
+            <summary>
+            used in conjunction with the Wander() method
+            to detemin the next position an agent should be in 
+            Should remain a private field and do not edit within this class
+            </summary>
+        </member>
+        <member name="F:SOFT152Steering.AntAgent.worldBounds">
+            <summary>
+            The size of the world the agent lives on as a Rectangle object.
+            Used in conjunction with ShouldStayInWorldBounds, which if true
+            will mean the agents position will be kept within the world bounds 
+            (i.e. the  world width or the world height).
+            To keep track of the objects bounds i.e. ViewPort dimensions.
+            </summary>
+        </member>
+        <member name="F:SOFT152Steering.AntAgent.randomNumberGenerator">
+            <summary>
+            The random object passed to the agent. 
+            Used only in the Wander() method to generate a 
+            random direction to move in.
+            </summary>
+        </member>
+        <member name="M:SOFT152Steering.AntAgent.#ctor(SOFT152SteeringLibrary.SOFT152Vector,System.Random)">
+            <summary>
+            AntAgent constructor to initialise the AntAgent object given the 
+            SOFT152Vector position and a Random object as a generator.
+            </summary>
+            <param name="position">The SOFT152Vector with X and Y coordinates of where to create the AntAgent.</param>
+            <param name="random">The Random object generator for the AntAgent.</param>
+        </member>
+        <member name="M:SOFT152Steering.AntAgent.#ctor(SOFT152SteeringLibrary.SOFT152Vector,System.Random,System.Drawing.Rectangle)">
+            <summary>
+            AntAgent constructor to initialise the AntAgent object given the
+            SOFT152Vector position, Random object as a generator and the bounds of 
+            the world given in a Rectangle object.
+            </summary>
+            <param name="position">The SOFT152Vector with X and Y coordinates of where to create the AntAgent.</param>
+            <param name="random">The Random object generator for the AntAgent.</param>
+            <param name="bounds">The Rectangle object with the bounds of the simulation world.</param>
+        </member>
+        <member name="M:SOFT152Steering.AntAgent.InitialiseAgent">
+            <summary>
+            Initialises the Agents various fields
+            with default values.
+            </summary>
+        </member>
+        <member name="M:SOFT152Steering.AntAgent.Approach(SOFT152SteeringLibrary.SOFT152Vector)">
+            <summary>
+            Causes the agent to make one step towards the object at objectPosition
+            The speed of approach will reduce one this agent is within
+            an ApproachRadius of the objectPosition.
+            </summary>
+            <param name="objectPosition">The SOFT152Vector with X and Y coordinates stating approach location.</param>
+        </member>
+        <member name="M:SOFT152Steering.AntAgent.FleeFrom(SOFT152SteeringLibrary.SOFT152Vector)">
+            <summary>
+            Causes the agent to make one step away from  the objectPosition
+            The speed of avoid is goverened by this agents speed.
+            </summary>
+            <param name="objectPosition">The SOFT152Vector with X and Y coordinates location of object to flee from.</param>
+        </member>
+        <member name="M:SOFT152Steering.AntAgent.Wander">
+            <summary>
+            Causes the agent to make one random step.
+            The size of the step determined by the value of WanderLimits
+            and the agents speed.
+            </summary>
+        </member>
+        <member name="M:SOFT152Steering.AntAgent.StayInWorld">
+            <summary>
+            Make sure the ant will stay in the world if the Boolean is set to true.
+            </summary>
+        </member>
+        <member name="P:SOFT152Steering.AntAgent.AgentPosition">
+            <summary>
+            Property (setter and getter) to set and get the SOFT152Vector of the AntAgent's position.
+            </summary>
+        </member>
+        <member name="T:SOFT152Steering.AntFoodForm">
+            <summary>
+            The main form which simulates the ant colony.
+            </summary>
+        </member>
+        <member name="F:SOFT152Steering.AntFoodForm.antColonySize">
+            <summary>
+            Store the ant colony size.
+            </summary>
+        </member>
+        <member name="F:SOFT152Steering.AntFoodForm.robberAntColonySize">
+            <summary>
+            Store the robber ant colony size.
+            </summary>
+        </member>
+        <member name="F:SOFT152Steering.AntFoodForm.foodPieces">
+            <summary>
+            Store the number of food pieces found in each food source.
+            </summary>
+        </member>
+        <member name="F:SOFT152Steering.AntFoodForm.antDetectionRadius">
+            <summary>
+            Ant minimum detection distance of other ants in the world, e.g. other ants, nest. 
+            </summary>
+        </member>
+        <member name="F:SOFT152Steering.AntFoodForm.objectDetectionRadius">
+            <summary>
+            The minimum distance to detect another object such as food/nest in the world.
+            </summary>
+        </member>
+        <member name="F:SOFT152Steering.AntFoodForm.isSimulationPaused">
+            <summary>
+            Continue/Pause simulation.
+            </summary>
+        </member>
+        <member name="F:SOFT152Steering.AntFoodForm.antColony">
+            <summary>
+            Declare a colony of normal AntAgents.
+            </summary>
+        </member>
+        <member name="F:SOFT152Steering.AntFoodForm.robberAntColony">
+            <summary>
+            Declare a colony of robber ants under the same AntAgent object.
+            </summary>
+        </member>
+        <member name="F:SOFT152Steering.AntFoodForm.colonyNests">
+            <summary>
+             Hold the ant colony nest objects.
+            </summary>
+        </member>
+        <member name="F:SOFT152Steering.AntFoodForm.colonyRobberNests">
+            <summary>
+            Hold the robber ant colony nest objects.
+            </summary>
+        </member>
+        <member name="F:SOFT152Steering.AntFoodForm.colonyFoodSources">
+            <summary>
+            Store all the food objects available in the colony.
+            </summary>        
+        </member>
+        <member name="F:SOFT152Steering.AntFoodForm.randomGenerator">
+            <summary>
+            The random object given to each AntAgent object.
+            </summary>
+        </member>
+        <member name="F:SOFT152Steering.AntFoodForm.backgroundImage">
+            <summary>
+            A bitmap image used for double buffering.
+            </summary>
+        </member>
+        <member name="M:SOFT152Steering.AntFoodForm.#ctor">
+            <summary>
+            Intialise the form in which world is displayed on.
+            </summary>
+        </member>
+        <member name="M:SOFT152Steering.AntFoodForm.CreateAnts">
+            <summary>
+            Create ants (normal ants and robber ants) based on the 
+            colony sizes that is specified in the form.
+            </summary>
+        </member>
+        <member name="M:SOFT152Steering.AntFoodForm.CreateFoodSource(System.Int32,System.Int32)">
+            <summary>
+            Create the food object given x and y coordinates of the user's mouse click.
+            </summary>
+            <param name="positionX">The X co-ordinate of the mouse press and where to create the food source object in x-axis.</param>
+            <param name="positionY">The Y co-ordinate of the mouse press and where to create the food source object in y-axis.</param>
+        </member>
+        <member name="M:SOFT152Steering.AntFoodForm.CreateNest(System.Int32,System.Int32)">
+            <summary>
+            Create the nest object given the x and y coordinates of the user's mouse click.
+            </summary>
+            <param name="positionX">The X co-ordinate of the mouse press and where to create the nest object in x-axis.</param>
+            <param name="positionY">The Y co-ordinate of the mouse press and where to create the nest object in y-axis.</param>
+        </member>
+        <member name="M:SOFT152Steering.AntFoodForm.CreateRobberNest(System.Int32,System.Int32)">
+            <summary>
+            Create the robber ant nest object providing the x and y coordinates of the user's mouse click.
+            </summary>
+            <param name="positionX">The X co-ordinate of the mouse press and where to create the robber nest object in x-axis.</param>
+            <param name="positionY">The Y co-ordinate of the mouse press and where to create the robber nest object in y-axis.</param>
+        </member>
+        <member name="M:SOFT152Steering.AntFoodForm.CreateBackgroundImage">
+            <summary>
+             Creates the background panel which is used in double buffering 
+             all the world objects to the form.
+            </summary>
+        </member>
+        <member name="M:SOFT152Steering.AntFoodForm.worldTimer_Tick(System.Object,System.EventArgs)">
+            <summary>
+            The world timer conducts the events of world objects.
+            This includes ants/robber ants, nests/robber nests and food sources.
+            </summary>
+        </member>
+        <member name="M:SOFT152Steering.AntFoodForm.DetectNearestFoodSource(SOFT152Steering.AntAgent)">
+            <summary>
+            An ant will be able to detect the closest food source to it.
+            This is used by normal ants.
+            </summary>
+            <param name="ant">The AntAgent object to detect the food source from.</param>
+        </member>
+        <member name="M:SOFT152Steering.AntFoodForm.DetectNearestNest(SOFT152Steering.AntAgent)">
+            <summary>
+            An ant will be able to detect the closest nest to it; dedicated for normal ants.
+            </summary>
+            <param name="ant">The AntAgent object to find the closest normal nest within it's proximity.</param>
+        </member>
+        <member name="M:SOFT152Steering.AntFoodForm.DetectNearestRobberNest(SOFT152Steering.AntAgent)">
+            <summary>
+            Detect the nearest robber ant nest given a robber AntAgent object stored in the robber ant colony.
+            </summary>
+            <param name="ant">The AntAgent object to find the closest robber ant nest object within it's proximity.</param>
+        </member>
+        <member name="M:SOFT152Steering.AntFoodForm.DetectClosestAnt(SOFT152Steering.AntAgent,System.Int32)">
+            <summary>
+            Detect the closest AntAgent object to another given AntAgent object.
+            This method is for the use of both normal ants and robber ants, 
+            however, the search will always be from the normal ant colony.
+            </summary>
+            <param name="ant">The AntAgent object to detect the closest AntAgent within it's detection radius.</param>
+            <param name="antIndex">The index of the AntAgent within it's own colony (List AntAgent object).</param>
+        </member>
+        <member name="M:SOFT152Steering.AntFoodForm.RecogniseClosestAnt(SOFT152Steering.AntAgent)">
+            <summary>
+            Recognise the closest normal ant to a robber AntAgent object
+            as being a potential food source; robber ant recognises 
+            normal ant's position as it's food location.
+            
+            The robber ant will only recognise a new food location if it
+            is not already carrying a piece of food it has not yet deposited.
+            </summary>
+            <param name="robberAnt">The robber AntAgent object for which to set its next food location.</param>
+        </member>
+        <member name="M:SOFT152Steering.AntFoodForm.ShareInformation(SOFT152Steering.AntAgent)">
+            <summary>
+            Simulate a conversation between AntAgent object, using their ClosestAntIndex,
+            to share information of the location of food and/or nest if either has it.
+            </summary>
+            <param name="sharingAnt">The AntAgent object which is to communicate with the closest ant to it.</param>
+        </member>
+        <member name="M:SOFT152Steering.AntFoodForm.FoodAntAction(SOFT152Steering.AntAgent)">
+            <summary>
+            Simulate actions when a normal ant arrives at a food source.
+            </summary>
+            <param name="ant">The AntAgent to simulate events at the food source.</param>
+        </member>
+        <member name="M:SOFT152Steering.AntFoodForm.RobberFoodAntAction(SOFT152Steering.AntAgent)">
+            <summary>
+            Simulate actions when a robber ant arrives at a food source.
+            </summary>
+            <param name="robberAnt">The robber AntAgent to simulate events when it arrives at the food source.</param>
+        </member>
+        <member name="M:SOFT152Steering.AntFoodForm.NestAntAction(SOFT152Steering.AntAgent)">
+            <summary>
+            Simulate actions when a normal ant arrives at it's nest.
+            </summary>
+            <param name="ant">The AntAgent to simulate events when it arrives at it's nest.</param>
+        </member>
+        <member name="M:SOFT152Steering.AntFoodForm.RobberNestAntAction(SOFT152Steering.AntAgent)">
+            <summary>
+            Simulate actions when a robber ant arrives at it's nest.
+            </summary>
+            <param name="robberAnt">The robber AntAgent to simulate events when it arrives at it's nest.</param>
+        </member>
+        <member name="M:SOFT152Steering.AntFoodForm.GenericAntAction(SOFT152Steering.AntAgent)">
+            <summary>
+            Simulate the generic actions that both normal and robber ants undertake when
+            they are either wandering around or about to move to food source or nest.
+            </summary>
+            <param name="ant">The AntAgent to simulate it's generic actions.</param>
+        </member>
+        <member name="M:SOFT152Steering.AntFoodForm.AntAction(SOFT152Steering.AntAgent)">
+            <summary>
+            Conduct the events a normal ant AntAgent object.
+            The action will be determined based on it's current status (e.g. if it is moving to a food source,
+            if it is depositing food at a nest).
+            </summary>
+            <param name="ant">The AntAgent for which to conduct the appropriate action for (based on it's current status).</param> 
+        </member>
+        <member name="M:SOFT152Steering.AntFoodForm.RobberAntAction(SOFT152Steering.AntAgent)">
+            <summary>
+            Conduct the events that a robber AntAgent object undertakes in the ant world.
+            </summary>
+            <param name="robberAnt">The robber AntAgent object to undertake the appropriate action in the current condition.</param>
+        </member>
+        <member name="M:SOFT152Steering.AntFoodForm.antMemoryTimer_Tick(System.Object,System.EventArgs)">
+            <summary>
+            This timer occurs every 10 seconds and only occurs if the ant is wandering.
+            </summary>
+        </member>
+        <member name="M:SOFT152Steering.AntFoodForm.AntMemoryLoss(SOFT152Steering.AntAgent)">
+            <summary>
+            Simulate memory loss within ants. The loss of memory for 
+            the ant can also occur at any random time it is wandering 
+            (if it has knowledge of food or the nest).
+            </summary>
+            <param name="antWithMemory">The AntAgent for which to simulate memory loss.</param>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:SOFT152Steering.AntFoodForm.DrawWorldObjects" -->
+        <member name="M:SOFT152Steering.AntFoodForm.setFoodPiecesButton_Click(System.Object,System.EventArgs)">
+            <summary>
+            Set the amount of pieces of food to be in each food source in the world.
+            </summary>
+        </member>
+        <member name="M:SOFT152Steering.AntFoodForm.drawingPanel_MouseDown(System.Object,System.Windows.Forms.MouseEventArgs)">
+            <summary>
+            Make sure we can create a world objects based on the type of object
+            that has been selected in the form and the location of the mouse click.
+            </summary>
+        </member>
+        <member name="M:SOFT152Steering.AntFoodForm.startButton_Click(System.Object,System.EventArgs)">
+            <summary>
+            Event handler to handle the click of the start button.
+            Allow to reset the world and start the simulation again.
+            </summary>
+        </member>
+        <member name="M:SOFT152Steering.AntFoodForm.pauseResumeButton_Click(System.Object,System.EventArgs)">
+            <summary>
+            Event handler to handle the pause/resume button click.
+            Results in either a pause or resume of the world simulation.
+            </summary>
+        </member>
+        <member name="F:SOFT152Steering.AntFoodForm.components">
+            <summary>
+            Required designer variable.
+            </summary>
+        </member>
+        <member name="M:SOFT152Steering.AntFoodForm.Dispose(System.Boolean)">
+            <summary>
+            Clean up any resources being used.
+            </summary>
+            <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        </member>
+        <member name="M:SOFT152Steering.AntFoodForm.InitializeComponent">
+            <summary>
+            Required method for Designer support - do not modify
+            the contents of this method with the code editor.
+            </summary>
+        </member>
+        <member name="F:SOFT152Steering.Food.isFoodDepleted">
+            <summary>
+            Allow for the food source to be either available or not.
+            </summary>
+        </member>
+        <member name="P:SOFT152Steering.Food.FoodPosition">
+            <summary>
+            Store the x and y co-ordinate of the food source in the world.
+            </summary>
+        </member>
+        <member name="F:SOFT152Steering.Food.foodAvailable">
+            <summary>
+            Store number of food pieces available in the food source.
+            </summary>
+        </member>
+        <member name="M:SOFT152Steering.Food.#ctor(SOFT152SteeringLibrary.SOFT152Vector)">
+            <summary>
+            Food constructor to initialise the food source object,
+            providing the SOFT152Vector position to create the object.
+            </summary>
+            <param name="foodPosition">The SOFT152Vector with X and Y coordinates of where to create the food source.</param>
+        </member>
+        <member name="M:SOFT152Steering.Food.#ctor(SOFT152SteeringLibrary.SOFT152Vector,System.Int32)">
+            <summary>
+            Food constructor to initialise the food source object
+            with a given SOFT152Vector position and the food pieces 
+            available at the food source.
+            </summary>
+            <param name="foodPosition">The SOFT152Vector with X and Y coordinates of where to create the food source.</param>
+            <param name="foodPieces">The number of pieces of food to create.</param>
+        </member>
+        <member name="P:SOFT152Steering.Food.FoodAvailable">
+            <summary>
+            Property (getter) for the food available variable to return 
+            the pieces of food available at the food source.
+            </summary>
+        </member>
+        <member name="P:SOFT152Steering.Food.IsFoodDepleted">
+            <summary>
+            Property (getter) to return if the food source
+            has been depleted at the present moment.
+            </summary>
+        </member>
+        <member name="M:SOFT152Steering.Food.TakeFood">
+            <summary>
+            A single piece of food can be taken from the Food object at 
+            one time. Food can only be taken as long as the source is not yet been depleted.
+            </summary>
+        </member>
+        <member name="P:SOFT152Steering.Nest.NestPosition">
+            <summary>
+            Hold the position of where the nest was created.
+            </summary>
+        </member>
+        <member name="F:SOFT152Steering.Nest.foodDeposited">
+            <summary>
+            Store the number of food pieces deposited.
+            </summary>
+        </member>
+        <member name="M:SOFT152Steering.Nest.#ctor(SOFT152SteeringLibrary.SOFT152Vector)">
+            <summary>
+            Nest constructor to initialise the nest object,
+            providing the SOFT152Vector position to create the object.
+            </summary>
+            <param name="nestPosition">The SOFT152Vector with X and Y coordinates of where to create the nest.</param>
+        </member>
+        <member name="P:SOFT152Steering.Nest.FoodDeposited">
+            <summary>
+            Property (getter) to return the total food pieces deposited at the nest.
+            </summary>
+        </member>
+        <member name="M:SOFT152Steering.Nest.DepositFood">
+            <summary>
+            Deposit a single food piece to the food object
+            at any one given time.
+            </summary>
+        </member>
+        <member name="M:SOFT152Steering.Program.Main">
+            <summary>
+            The main entry point for the application.
+            </summary>
+        </member>
+        <member name="T:SteeringProject.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:SteeringProject.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:SteeringProject.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+    </members>
+</doc>
